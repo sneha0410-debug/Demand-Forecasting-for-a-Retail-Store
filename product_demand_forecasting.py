@@ -37,14 +37,19 @@ plt.figure(figsize=(10, 6))
 plt.plot(data, label='Historical Sales')
 plt.plot(forecast_index, forecast.predicted_mean, color='red', label='Forecast')
 
-conf_int = forecast.conf_int() if 'lower Sales' in forecast.conf_int().columns else None
-if conf_int is not None:
-    plt.fill_between(forecast_index,
-                     conf_int['lower Sales'],
-                     conf_int['upper Sales'], color='pink', alpha=0.3)
+conf_int = forecast.conf_int()
+plt.fill_between(forecast_index,
+                 conf_int['lower Sales'],
+                 conf_int['upper Sales'], color='pink', alpha=0.3)
 
 plt.title('Forecast vs Actual Sales')
 plt.xlabel('Date')
 plt.ylabel('Sales')
 plt.legend()
 plt.show()
+
+output_file_name = 'forecast_output.csv'
+forecast_df = pd.DataFrame(forecast.predicted_mean, index=forecast_index, columns=['Forecast'])
+forecast_df.to_csv(output_file_name, index=True)
+
+print(f"Forecast results saved to {output_file_name}")
